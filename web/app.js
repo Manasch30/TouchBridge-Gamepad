@@ -216,6 +216,10 @@ const elements = {
   btnImportProfileTrigger: document.getElementById('btn-import-profile-trigger'),
   inputImportProfileFile: document.getElementById('input-import-profile-file'),
   profileSummaryDetails: document.getElementById('profile-summary-details'),
+
+  // Rotation & Fullscreen Triggers
+  btnHudRotate: document.getElementById('btn-hud-rotate'),
+  btnPromptRotate: document.getElementById('btn-prompt-rotate'),
 };
 
 // ================= Logging UI =================
@@ -797,23 +801,61 @@ function setupDynamicJoystick() {
   zone.addEventListener('pointercancel', releaseJoystick);
 }
 
-// ================= Fullscreen & WakeLock =================
-async function toggleFullscreen() {
-  if (!document.fullscreenElement) {
+// ================= Fullscreen, Rotation & WakeLock =================
+async function toggleFullscreenAndRotate(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const isPortrait = window.innerHeight > window.innerWidth;
+
+  // 1. Fullscreen Request
+  const doc = document;
+  const isFs = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
+
+  if (!isFs) {
+    const elem = doc.documentElement;
     try {
-      await document.documentElement.requestFullscreen();
-      // Try screen orientation lock to landscape if supported
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('landscape').catch(() => {});
+      if (elem.requestFullscreen) {
+        await elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        await elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        await elem.msRequestFullscreen();
       }
-    } catch (e) {
-      console.warn("Fullscreen error:", e);
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
+    } catch (err) {
+      console.warn("Fullscreen request warning:", err);
     }
   }
+
+  // 2. Screen Orientation API Lock (Supported natively on Chrome Android)
+  let nativeLockSuccess = false;
+  if (screen.orientation && screen.orientation.lock) {
+    try {
+      await screen.orientation.lock('landscape');
+      nativeLockSuccess = true;
+      document.body.classList.remove('force-landscape-rotate');
+    } catch (err) {
+      console.log("Native screen.orientation.lock not permitted or rejected:", err);
+    }
+  }
+
+  // 3. CSS Force-Rotate Fallback: If native orientation lock didn't apply (e.g. system auto-rotate toggle locked on phone)
+  if (!nativeLockSuccess && (window.innerHeight > window.innerWidth || !document.body.classList.contains('force-landscape-rotate'))) {
+    document.body.classList.toggle('force-landscape-rotate');
+  } else if (!isPortrait) {
+    document.body.classList.remove('force-landscape-rotate');
+  }
+
+  // 4. Ensure Screen WakeLock is active so phone screen stays on while gaming
+  if (!state.wakeLock) {
+    requestWakeLock();
+  }
+
+  triggerHaptic(25);
+  addLogEntry("Toggled Fullscreen & Landscape Gamepad", "info");
+
+  // Dispatch window resize so dynamic joystick & HUD recompute layout dimensions
+  setTimeout(() => {
+    window.dispatchEvent(new Event('resize'));
+  }, 120);
 }
 
 async function requestWakeLock() {
@@ -918,9 +960,24 @@ function init() {
     elements.panelDiag.classList.remove('active');
   });
 
-  // Fullscreen & WakeLock
-  elements.btnFullscreen.addEventListener('click', toggleFullscreen);
+  // Fullscreen, Direct Rotate & WakeLock
+  if (elements.btnFullscreen) {
+    elements.btnFullscreen.addEventListener('click', toggleFullscreenAndRotate);
+  }
+  if (elements.btnHudRotate) {
+    elements.btnHudRotate.addEventListener('click', toggleFullscreenAndRotate);
+  }
+  if (elements.btnPromptRotate) {
+    elements.btnPromptRotate.addEventListener('click', toggleFullscreenAndRotate);
+  }
   elements.btnWakeLock.addEventListener('click', requestWakeLock);
+
+  // Auto remove force-rotate class when phone is naturally rotated to landscape
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > window.innerHeight) {
+      document.body.classList.remove('force-landscape-rotate');
+    }
+  });
 
   // Auto request WakeLock on user gesture
   document.addEventListener('pointerdown', () => {
