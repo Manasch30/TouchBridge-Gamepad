@@ -87,4 +87,5 @@ python server.py
 ---
 
 ## 📜 License
-MIT License. Free to use, modify, and distribute.
+This project is licensed under the [GNU General Public License v3.0 (GPLv3)](LICENSE).  
+You are free to use, study, share, and modify this software. Any modified or derived versions must also remain open-source under GPLv3.
