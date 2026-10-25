@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>TouchBridge Gamepad | Ultra-Low Latency PC Touch Controller</title>
+  <meta name="theme-color" content="#07090e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+  <div id="app-container">
+    
+    <!-- Top Navigation & Status Bar -->
+    <header id="top-bar">
+      <div class="brand">
+        <span class="brand-badge">TOUCHPAD</span>
+        <span class="brand-title">TouchBridge Gamepad</span>
+      </div>
+
+      <div class="connection-pill" id="conn-status-pill">
+        <span class="status-dot disconnected" id="status-dot"></span>
+        <span class="status-label" id="status-text">Connecting...</span>
+        <span class="rtt-badge" id="live-rtt-badge">-- ms</span>
+      </div>
+
+      <nav class="mode-tabs">
+        <button class="tab-btn active" id="tab-btn-diagnostics" data-tab="diagnostics-panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Diagnostics (A-C)
+        </button>
+        <button class="tab-btn" id="tab-btn-controller" data-tab="controller-panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="4"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="12" r="2"/></svg>
+          Game HUD
+        </button>
+      </nav>
+
+      <div class="quick-actions">
+        <button class="icon-btn hidden" id="btn-install-pwa" title="Install Web App on Phone">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-fullscreen" title="Toggle Fullscreen">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-wakelock" title="Keep Screen Awake">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN PANELS -->
+    <main id="main-content">
+      
+      <!-- TAB 1: DIAGNOSTICS & VALIDATION PANEL (Milestone Tests A, B, C) -->
+      <section id="diagnostics-panel" class="tab-panel active">
+        
+        <div class="panel-grid">
+          
+          <!-- Card 1: Network & Milestone Test A -->
+          <div class="glass-card test-card" id="card-test-a">
+            <div class="card-header">
+              <div class="step-badge">TEST A</div>
+              <h3>Network Connectivity</h3>
+            </div>
+            <p class="card-desc">Persistent low-overhead WebSocket transport between Android phone & Windows PC.</p>
+            
+            <div class="field-group">
+              <label for="ws-address-input">WebSocket Server URL:</label>
+              <div class="input-with-button">
+                <input type="text" id="ws-address-input" spellcheck="false" placeholder="ws://10.81.5.176:8765">
+                <button class="primary-btn" id="btn-reconnect">Connect</button>
+              </div>
+            </div>
+
+            <div class="stat-rows">
+              <div class="stat-item">
+                <span class="label">Transport:</span>
+                <span class="val mono" id="val-transport">WebSocket (ws://)</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Connected Peer:</span>
+                <span class="val mono" id="val-peer">Searching...</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Messages Sent / Recv:</span>
+                <span class="val mono" id="val-msg-counts">0 / 0</span>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="secondary-btn" id="btn-send-echo">Send Hello Probe</button>
+              <span class="echo-result" id="echo-status-msg"></span>
+            </div>
+          </div>
+
+          <!-- Card 2: Latency & Milestone Test B -->
+          <div class="glass-card test-card" id="card-test-b">
+            <div class="card-header">
+              <div class="step-badge">TEST B</div>
+              <h3>Message Timing & RTT Benchmark</h3>
+            </div>
+            <p class="card-desc">Continuous high-frequency round-trip measurement (ping/pong) to quantify network delay & jitter.</p>
+
+            <div class="benchmark-controls">
+              <button class="primary-btn sm" id="btn-toggle-benchmark">Stop Benchmark</button>
+              <div class="rate-select">
+                <span>Rate:</span>
+                <button class="chip active" data-hz="20">20 Hz</button>
+                <button class="chip" data-hz="50">50 Hz</button>
+              </div>
+            </div>
+
+            <!-- Stats Metric Grid -->
+            <div class="metric-grid">
+              <div class="metric-box highlight">
+                <span class="metric-title">CURRENT RTT</span>
+                <span class="metric-val" id="metric-current-rtt">--</span>
+                <span class="metric-unit">ms</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-title">MEDIAN (p50)</span>
+                <span class="metric-val" id="metric-median-rtt">--</span>
+                <span class="metric-unit">ms</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-title">95th %ILE (p95)</span>
+                <span class="metric-val" id="metric-p95-rtt">--</span>
+                <span class="metric-unit">ms</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-title">MIN / MAX</span>
+                <span class="metric-val sm" id="metric-minmax-rtt">-- / --</span>
+                <span class="metric-unit">ms</span>
+              </div>
+            </div>
+
+            <!-- Canvas Latency Sparkline Graph -->
+            <div class="canvas-container">
+              <canvas id="latency-canvas" width="400" height="90"></canvas>
+            </div>
+          </div>
+
+          <!-- Card 3: Windows Input Injection & Milestone Test C -->
+          <div class="glass-card test-card full-width" id="card-test-c">
+            <div class="card-header">
+              <div class="step-badge">TEST C</div>
+              <h3>Windows DirectInput Delivery</h3>
+            </div>
+            <p class="card-desc">Validates key down, sustained hold, and immediate key release on disconnect. Injects hardware scan codes.</p>
+
+            <div class="test-injection-row">
+              <div class="test-button-wrapper">
+                <button class="tactile-test-btn" id="btn-test-action" data-action="test_button">
+                  <span class="btn-primary-text">HOLD TEST KEY</span>
+                  <span class="btn-subtext">Mapped to PC [SPACEBAR]</span>
+                </button>
+              </div>
+
+              <div class="test-meta-info">
+                <div class="toggle-row">
+                  <label class="switch-container">
+                    <input type="checkbox" id="chk-hardware-injection" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                  <span class="switch-label">Live PC Hardware Injection</span>
+                </div>
+
+                <div class="toggle-row">
+                  <label class="switch-container">
+                    <input type="checkbox" id="chk-haptic-feedback" checked>
+                    <span class="switch-slider"></span>
+                  </label>
+                  <span class="switch-label">Tactile Haptic Vibration</span>
+                </div>
+
+                <div class="input-monitor">
+                  <div class="monitor-title">PC Receiver Status:</div>
+                  <div class="held-badge" id="held-keys-monitor">Active Keys: None</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Event Activity Log -->
+            <div class="log-container">
+              <div class="log-header">
+                <span>Recent Event Stream</span>
+                <button class="clear-btn" id="btn-clear-log">Clear</button>
+              </div>
+              <div class="log-entries" id="log-entries"></div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- TAB 2: FULL eFOOTBALL MOBILE TOUCHPAD HUD (Milestones 5-7) -->
+      <section id="controller-panel" class="tab-panel">
+        <div id="controller-touch-surface">
+
+          <!-- Left Half: Dynamic Floating Joystick Zone -->
+          <div id="joystick-zone" class="hud-zone">
+            <div class="zone-watermark">TOUCH TO MOVE</div>
+            
+            <!-- Joystick visuals (positioned dynamically on touch) -->
+            <div id="joystick-base" class="hidden">
+              <div id="joystick-stick"></div>
+            </div>
+
+            <div class="joystick-vector-hud">
+              <span id="joy-hud-x">X: 0.00</span> | <span id="joy-hud-y">Y: 0.00</span> | <span id="joy-hud-dir">DIR: IDLE</span>
+            </div>
+          </div>
+
+          <!-- Center HUD -->
+          <div id="center-hud">
+            <div class="hud-center-actions">
+              <button class="mode-pill edit-pill" id="btn-toggle-edit-layout" title="Customize HUD layout">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:3px; vertical-align:-1px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                LAYOUT
+              </button>
+              <button class="mode-pill gesture-pill" id="btn-open-gestures" title="Configure button names, keys, and 4-way swipe combos">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:3px; vertical-align:-1px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                BUTTONS & COMBOS
+              </button>
+              <button class="mode-pill profile-pill" id="btn-open-profiles" title="Game Profiles (Export, Import, Switch)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:3px; vertical-align:-1px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                PROFILES
+              </button>
+            </div>
+            <div class="latency-mini-meter" id="hud-mini-latency">
+              RTT: <span id="hud-rtt-val">-- ms</span>
+            </div>
+          </div>
+
+          <!-- Layout Customization Floating Toolbar (visible during Customize mode) -->
+          <div id="layout-editor-toolbar" class="editor-toolbar hidden">
+            <div class="toolbar-header-row">
+              <span class="toolbar-hint" id="toolbar-selection-label">📐 Tap a button to select & resize</span>
+              <button class="primary-btn sm add-btn-pill" id="btn-add-custom-button" type="button">+ ADD BUTTON</button>
+            </div>
+            <div class="toolbar-controls">
+              <div class="control-item">
+                <span class="ctrl-label" id="size-slider-label">Size:</span>
+                <input type="range" id="slider-btn-size" min="0.55" max="1.8" step="0.05" value="1.0">
+                <span class="slider-val-badge" id="badge-size-val">100%</span>
+              </div>
+              <div class="control-item">
+                <span class="ctrl-label">Opacity:</span>
+                <input type="range" id="slider-btn-opacity" min="0.25" max="1.0" step="0.05" value="0.95">
+              </div>
+              <button class="secondary-btn sm danger-btn hidden" id="btn-delete-selected-btn" type="button" title="Delete selected custom button">🗑️ Delete</button>
+              <button class="secondary-btn sm" id="btn-reset-layout" type="button">Reset All</button>
+              <button class="primary-btn sm" id="btn-save-layout" type="button">Done</button>
+            </div>
+          </div>
+
+          <!-- Right Half: Action Buttons Zone -->
+          <div id="action-zone" class="hud-zone">
+            <div class="action-cluster" id="action-cluster">
+              
+              <!-- Top: Through Ball / GK Rush -->
+              <div class="hud-btn-wrap btn-top" id="wrap-action-through">
+                <button class="hud-game-btn swipeable-btn" id="btn-action-through" data-action="through" data-swipeable="true">
+                  <div class="swipe-indicator-overlay">
+                    <span class="swipe-dir-arrow arrow-up" data-dir="up">▲</span>
+                    <span class="swipe-dir-arrow arrow-down" data-dir="down">▼</span>
+                    <span class="swipe-dir-arrow arrow-left" data-dir="left">◀</span>
+                    <span class="swipe-dir-arrow arrow-right" data-dir="right">▶</span>
+                  </div>
+                  <span class="hud-btn-atk">THROUGH</span>
+                  <span class="hud-btn-slash">/ GK RUSH</span>
+                  <span class="hud-btn-sub">[W]</span>
+                </button>
+              </div>
+
+              <!-- Left: Defense & Run Control -->
+              <div class="hud-btn-wrap btn-left" id="wrap-action-def">
+                <button class="hud-game-btn swipeable-btn" id="btn-action-def" data-action="def" data-swipeable="true">
+                  <div class="swipe-indicator-overlay">
+                    <span class="swipe-dir-arrow arrow-up" data-dir="up">▲</span>
+                    <span class="swipe-dir-arrow arrow-down" data-dir="down">▼</span>
+                    <span class="swipe-dir-arrow arrow-left" data-dir="left">◀</span>
+                    <span class="swipe-dir-arrow arrow-right" data-dir="right">▶</span>
+                  </div>
+                  <span class="hud-btn-atk">DEF</span>
+                  <span class="hud-btn-slash">/ RUN</span>
+                  <span class="hud-btn-sub">[Q]</span>
+                </button>
+              </div>
+
+              <!-- Right: Shoot / Clearance -->
+              <div class="hud-btn-wrap btn-right" id="wrap-action-shoot">
+                <button class="hud-game-btn action-shoot swipeable-btn" id="btn-action-shoot" data-action="shoot" data-swipeable="true">
+                  <div class="swipe-indicator-overlay">
+                    <span class="swipe-dir-arrow arrow-up" data-dir="up">▲</span>
+                    <span class="swipe-dir-arrow arrow-down" data-dir="down">▼</span>
+                    <span class="swipe-dir-arrow arrow-left" data-dir="left">◀</span>
+                    <span class="swipe-dir-arrow arrow-right" data-dir="right">▶</span>
+                  </div>
+                  <span class="hud-btn-atk">SHOOT</span>
+                  <span class="hud-btn-slash">/ CLEAR</span>
+                  <span class="hud-btn-sub">[D]</span>
+                </button>
+              </div>
+
+              <!-- Bottom: Short Pass / Match-Up Pressure -->
+              <div class="hud-btn-wrap btn-bottom" id="wrap-action-pass">
+                <button class="hud-game-btn action-pass swipeable-btn" id="btn-action-pass" data-action="pass" data-swipeable="true">
+                  <div class="swipe-indicator-overlay">
+                    <span class="swipe-dir-arrow arrow-up" data-dir="up">▲</span>
+                    <span class="swipe-dir-arrow arrow-down" data-dir="down">▼</span>
+                    <span class="swipe-dir-arrow arrow-left" data-dir="left">◀</span>
+                    <span class="swipe-dir-arrow arrow-right" data-dir="right">▶</span>
+                  </div>
+                  <span class="hud-btn-atk">PASS</span>
+                  <span class="hud-btn-slash">/ MATCH-UP</span>
+                  <span class="hud-btn-sub">[S]</span>
+                </button>
+              </div>
+
+              <!-- Side Modifiers: Sprint / Dash -->
+              <div class="hud-btn-wrap btn-dash" id="wrap-action-dash">
+                <button class="hud-game-btn action-dash" id="btn-action-dash" data-action="dash">
+                  <span class="hud-btn-atk">DASH</span>
+                  <span class="hud-btn-slash">/ SPRINT</span>
+                  <span class="hud-btn-sub">[E]</span>
+                </button>
+              </div>
+
+              <!-- Side Modifiers: Cursor Switch / Pressing -->
+              <div class="hud-btn-wrap btn-switch" id="wrap-action-switch">
+                <button class="hud-game-btn action-switch" id="btn-action-switch" data-action="switch">
+                  <span class="hud-btn-atk">SWITCH</span>
+                  <span class="hud-btn-slash">/ PRESS</span>
+                  <span class="hud-btn-sub">[Q]</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Swipe Gestures & Key Combos Config Modal -->
+    <div id="gestures-modal" class="modal-overlay hidden">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="step-badge">CONFIG</span>
+            <h3>Button & Swipe Combos</h3>
+          </div>
+          <button class="icon-btn sm" id="btn-close-gestures" title="Close">✕</button>
+        </div>
+        
+        <p class="modal-desc">Customize button display names, single-tap keys, and directional swipe combinations.</p>
+
+        <!-- Button Selector Tabs -->
+        <div class="gesture-button-tabs" id="gesture-tabs">
+          <button class="g-tab-btn active" data-btn="pass">PASS [S]</button>
+          <button class="g-tab-btn" data-btn="shoot">SHOOT [D]</button>
+          <button class="g-tab-btn" data-btn="through">THROUGH [W]</button>
+          <button class="g-tab-btn" data-btn="def">DEF / RUN [Q]</button>
+        </div>
+
+        <!-- Direction Slots Container -->
+        <div class="gesture-slots-list" id="gesture-slots-list">
+          <!-- Dynamically populated in JavaScript -->
+        </div>
+
+        <!-- Swipe Recognition Buffer Window Slider -->
+        <div class="gesture-buffer-row" style="margin-bottom:14px; background:rgba(0,0,0,0.35); padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:12px; font-weight:700; color:#fff;">Swipe Recognition Buffer:</div>
+            <div style="font-size:10px; color:var(--text-dim);">Buffers tap to prevent normal button from firing during a swipe</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="range" id="slider-swipe-buffer" min="30" max="140" step="5" value="70" style="width:90px; accent-color:var(--accent-cyan);">
+            <span id="badge-swipe-buffer-val" style="font-family:var(--font-mono); font-size:11px; color:var(--accent-cyan); min-width:38px;">70ms</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="secondary-btn" id="btn-reset-gestures">Reset Defaults</button>
+          <button class="primary-btn" id="btn-save-gestures">Save All Buttons & Combos</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Profiles Manager Modal (Export, Import, Switch, Create) -->
+    <div id="modal-profiles" class="modal-overlay hidden">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="step-badge" style="background:var(--accent-green); color:#030a12;">PROFILES</span>
+            <h3>Game Profiles & Bindings</h3>
+          </div>
+          <button class="icon-btn sm" id="btn-close-profiles" type="button" title="Close">✕</button>
+        </div>
+
+        <p class="modal-desc">Switch, create, export, and import complete keybinding & layout profiles for different games.</p>
+
+        <!-- Current Profile Select Box -->
+        <div class="profile-select-box">
+          <div class="profile-current-row">
+            <label for="select-profile-choice">Active Game Profile:</label>
+            <div class="profile-select-controls">
+              <select id="select-profile-choice" class="profile-dropdown">
+                <!-- Dynamically populated in JavaScript -->
+              </select>
+              <button class="primary-btn sm" id="btn-new-profile" type="button">+ New Profile</button>
+            </div>
+          </div>
+
+          <div class="profile-quick-actions">
+            <button class="secondary-btn sm" id="btn-rename-profile" type="button" title="Rename this profile">✏️ Rename Profile</button>
+            <button class="secondary-btn sm danger-btn" id="btn-delete-profile" type="button" title="Delete this profile">🗑️ Delete Profile</button>
+          </div>
+        </div>
+
+        <!-- File Import / Export Card -->
+        <div class="profile-io-card">
+          <div class="io-title">Backup & Share Game Profiles (.json)</div>
+          <div class="io-actions-row">
+            <button class="secondary-btn" id="btn-export-profile" type="button" style="border-color:var(--accent-cyan); color:var(--accent-cyan);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px; vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Profile (Download .json)
+            </button>
+            <button class="secondary-btn" id="btn-import-profile-trigger" type="button" style="border-color:var(--accent-green); color:var(--accent-green);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px; vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import Profile (Upload .json)
+            </button>
+            <input type="file" id="input-import-profile-file" accept=".json" style="display:none;">
+          </div>
+        </div>
+
+        <!-- Profile Summary Preview -->
+        <div class="profile-summary-wrap">
+          <div class="summary-header">Active Profile Configuration:</div>
+          <div class="summary-details" id="profile-summary-details">
+            <!-- Dynamically populated summary -->
+          </div>
+        </div>
+
+        <div class="modal-footer" style="margin-top:16px;">
+          <button class="primary-btn" id="btn-done-profiles" type="button" style="width:100%;">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Custom Button Modal -->
+    <div id="modal-add-button" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="step-badge">NEW BUTTON</span>
+            <h3>Add Custom Button</h3>
+          </div>
+          <button class="icon-btn sm" id="btn-close-add-modal" type="button" title="Close">✕</button>
+        </div>
+
+        <div class="field-group" style="text-align:left; margin-top:10px;">
+          <label for="input-custom-label">Button Label (Text displayed):</label>
+          <input type="text" id="input-custom-label" placeholder="e.g. SPRINT, SHOT CANCEL, SKILL" maxlength="14" style="width:100%; padding:9px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:#fff; border-radius:6px; font-weight:700;">
+        </div>
+
+        <div class="field-group" style="text-align:left;">
+          <label for="input-custom-key">PC Key or Key Combo (e.g. space, lshift, c+d):</label>
+          <input type="text" id="input-custom-key" placeholder="e.g. space, lshift, c+d, esc, z, x" style="width:100%; padding:9px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:var(--accent-cyan); border-radius:6px; font-family:var(--font-mono); font-weight:700;">
+          <div class="quick-presets" style="margin-top:6px;">
+            <button class="preset-chip custom-preset-chip" type="button" data-val="space">SPACE</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="lshift">LSHIFT</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="c">C</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="z">Z</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="c+d">C+D</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="a+d">A+D</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="e+s">E+S</button>
+            <button class="preset-chip custom-preset-chip" type="button" data-val="escape">ESC</button>
+          </div>
+        </div>
+
+        <div class="field-group" style="text-align:left;">
+          <label>Button Theme / Color:</label>
+          <div class="color-palette-select" id="custom-btn-color-select">
+            <button class="color-chip active" type="button" data-color="cyan" style="background:#00f2fe;"></button>
+            <button class="color-chip" type="button" data-color="green" style="background:#00e676;"></button>
+            <button class="color-chip" type="button" data-color="coral" style="background:#ff3d71;"></button>
+            <button class="color-chip" type="button" data-color="purple" style="background:#7928ca;"></button>
+            <button class="color-chip" type="button" data-color="orange" style="background:#ff9100;"></button>
+            <button class="color-chip" type="button" data-color="yellow" style="background:#ffd600;"></button>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="margin-top:16px;">
+          <button class="secondary-btn" id="btn-cancel-add-modal" type="button">Cancel</button>
+          <button class="primary-btn" id="btn-confirm-add-button" type="button">Create Button</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disconnected Overlay Warning -->
+    <div id="disconnected-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-icon">⚠️</div>
+        <h3>Receiver Disconnected</h3>
+        <p>Lost WebSocket connection to the PC receiver. Ensure PC receiver is running and your phone is on the same Wi-Fi network.</p>
+        <button class="primary-btn" id="modal-reconnect-btn">Retry Connection</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

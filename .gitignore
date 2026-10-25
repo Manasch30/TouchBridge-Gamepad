@@ -1,0 +1,50 @@
+# ==========================================
+# Python Bytecode & Cache
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ==========================================
+# Virtual Environments & Packages
+# ==========================================
+venv/
+.venv/
+env/
+.env/
+ENV/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ==========================================
+# Operating System & Local Artifacts
+# ==========================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ==========================================
+# IDEs and Editors
+# ==========================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
+*.log
+scratch/
+.tempmediaStorage/
+temp/
+tmp/
