@@ -1,4 +1,4 @@
-const CACHE_NAME = 'efootball-touch-v1';
+const CACHE_NAME = 'touchbridge-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

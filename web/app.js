@@ -802,61 +802,85 @@ function setupDynamicJoystick() {
 }
 
 // ================= Fullscreen, Rotation & WakeLock =================
-async function toggleFullscreenAndRotate(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  const isPortrait = window.innerHeight > window.innerWidth;
+async function toggleFullscreen(e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
 
-  // 1. Fullscreen Request
   const doc = document;
-  const isFs = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
+  const isFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
 
   if (!isFs) {
-    const elem = doc.documentElement;
+    const el = doc.documentElement;
+    // Enter Fullscreen with vendor fallbacks
     try {
-      if (elem.requestFullscreen) {
-        await elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) {
-        await elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        await elem.msRequestFullscreen();
+      if (el.requestFullscreen) {
+        await el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        await el.webkitRequestFullscreen();
+      } else if (el.webkitEnterFullscreen) {
+        await el.webkitEnterFullscreen();
+      } else if (el.msRequestFullscreen) {
+        await el.msRequestFullscreen();
       }
     } catch (err) {
-      console.warn("Fullscreen request warning:", err);
+      console.warn("Fullscreen request error:", err);
     }
-  }
 
-  // 2. Screen Orientation API Lock (Supported natively on Chrome Android)
-  let nativeLockSuccess = false;
-  if (screen.orientation && screen.orientation.lock) {
+    // Try landscape orientation lock
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(() => {
+        if (screen.orientation.lock) {
+          screen.orientation.lock('landscape-primary').catch(() => {});
+        }
+      });
+    }
+  } else {
+    // Exit Fullscreen cleanly
     try {
-      await screen.orientation.lock('landscape');
-      nativeLockSuccess = true;
-      document.body.classList.remove('force-landscape-rotate');
+      if (doc.exitFullscreen) {
+        await doc.exitFullscreen();
+      } else if (doc.webkitExitFullscreen) {
+        await doc.webkitExitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        await doc.msExitFullscreen();
+      }
     } catch (err) {
-      console.log("Native screen.orientation.lock not permitted or rejected:", err);
+      console.warn("Exit fullscreen error:", err);
+    }
+
+    if (screen.orientation && screen.orientation.unlock) {
+      try {
+        screen.orientation.unlock();
+      } catch (err) {}
     }
   }
 
-  // 3. CSS Force-Rotate Fallback: If native orientation lock didn't apply (e.g. system auto-rotate toggle locked on phone)
-  if (!nativeLockSuccess && (window.innerHeight > window.innerWidth || !document.body.classList.contains('force-landscape-rotate'))) {
-    document.body.classList.toggle('force-landscape-rotate');
-  } else if (!isPortrait) {
-    document.body.classList.remove('force-landscape-rotate');
-  }
-
-  // 4. Ensure Screen WakeLock is active so phone screen stays on while gaming
   if (!state.wakeLock) {
     requestWakeLock();
   }
 
-  triggerHaptic(25);
-  addLogEntry("Toggled Fullscreen & Landscape Gamepad", "info");
+  triggerHaptic(20);
+  addLogEntry(isFs ? "Exited Fullscreen" : "Entered Fullscreen Gamepad", "info");
 
-  // Dispatch window resize so dynamic joystick & HUD recompute layout dimensions
   setTimeout(() => {
     window.dispatchEvent(new Event('resize'));
-  }, 120);
+  }, 100);
 }
+
+function updateFullscreenBadge() {
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (elements.btnFullscreen) {
+    const span = elements.btnFullscreen.querySelector('span');
+    if (span) span.textContent = isFs ? 'EXIT ⛶' : 'FULLSCREEN ⛶';
+  }
+  if (elements.btnHudRotate) {
+    elements.btnHudRotate.textContent = isFs ? 'EXIT ⛶' : 'FULLSCREEN';
+  }
+}
+document.addEventListener('fullscreenchange', updateFullscreenBadge);
+document.addEventListener('webkitfullscreenchange', updateFullscreenBadge);
 
 async function requestWakeLock() {
   if ('wakeLock' in navigator) {
@@ -960,24 +984,20 @@ function init() {
     elements.panelDiag.classList.remove('active');
   });
 
-  // Fullscreen, Direct Rotate & WakeLock
+  // Fullscreen & WakeLock
   if (elements.btnFullscreen) {
-    elements.btnFullscreen.addEventListener('click', toggleFullscreenAndRotate);
+    elements.btnFullscreen.addEventListener('click', toggleFullscreen);
+    elements.btnFullscreen.addEventListener('touchend', toggleFullscreen);
   }
   if (elements.btnHudRotate) {
-    elements.btnHudRotate.addEventListener('click', toggleFullscreenAndRotate);
+    elements.btnHudRotate.addEventListener('click', toggleFullscreen);
+    elements.btnHudRotate.addEventListener('touchend', toggleFullscreen);
   }
   if (elements.btnPromptRotate) {
-    elements.btnPromptRotate.addEventListener('click', toggleFullscreenAndRotate);
+    elements.btnPromptRotate.addEventListener('click', toggleFullscreen);
+    elements.btnPromptRotate.addEventListener('touchend', toggleFullscreen);
   }
   elements.btnWakeLock.addEventListener('click', requestWakeLock);
-
-  // Auto remove force-rotate class when phone is naturally rotated to landscape
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > window.innerHeight) {
-      document.body.classList.remove('force-landscape-rotate');
-    }
-  });
 
   // Auto request WakeLock on user gesture
   document.addEventListener('pointerdown', () => {
