@@ -5,38 +5,229 @@
 
 const DEFAULT_GESTURES = {
   pass: {
-    name: "PASS / MATCH-UP",
+    name: "PASS / CROSS",
     baseKey: "s",
-    up: { key: "w", presets: ["w", "lshift+w", "a"] },
-    down: { key: "s", presets: ["s", "c+s", "e+s"] },
-    left: { key: "a", presets: ["a", "c+a", "q"] },
-    right: { key: "e+s", presets: ["e+s", "lshift+s", "space"] }
+    up: {
+      key: "a",
+      presets: [
+        "w",
+        "lshift+w",
+        "a"
+      ]
+    },
+    down: {
+      key: "s",
+      presets: [
+        "s",
+        "c+s",
+        "e+s"
+      ]
+    },
+    left: {
+      key: "a+s",
+      presets: [
+        "a",
+        "c+a",
+        "q"
+      ]
+    },
+    right: {
+      key: "e+s",
+      presets: [
+        "e+s",
+        "lshift+s",
+        "space"
+      ]
+    }
   },
   shoot: {
     name: "SHOOT / CLEAR",
     baseKey: "d",
-    up: { key: "w+d", presets: ["w+d", "q+d", "lshift+d"] },
-    down: { key: "c+d", presets: ["c+d", "z+d", "d"] },
-    left: { key: "a+d", presets: ["a+d", "e+d", "space+d"] },
-    right: { key: "e+d", presets: ["e+d", "lshift+d", "c"] }
+    up: {
+      key: "q+d",
+      presets: [
+        "w+d",
+        "q+d",
+        "lshift+d"
+      ]
+    },
+    down: {
+      key: "c+d",
+      presets: [
+        "c+d",
+        "z+d",
+        "d"
+      ]
+    },
+    left: {
+      key: "e+d",
+      presets: [
+        "a+d",
+        "e+d",
+        "space+d"
+      ]
+    },
+    right: {
+      key: "e+d",
+      presets: [
+        "e+d",
+        "lshift+d",
+        "c"
+      ]
+    }
   },
   through: {
     name: "THROUGH / GK RUSH",
     baseKey: "w",
-    up: { key: "lshift+w", presets: ["lshift+w", "q+w", "a+w"] },
-    down: { key: "w", presets: ["w", "s+w", "c+w"] },
-    left: { key: "a+w", presets: ["a+w", "q+w", "s"] },
-    right: { key: "e+w", presets: ["e+w", "lshift+w", "space"] }
+    up: {
+      key: "lshift+w",
+      presets: [
+        "lshift+w",
+        "q+w",
+        "a+w"
+      ]
+    },
+    down: {
+      key: "w",
+      presets: [
+        "w",
+        "s+w",
+        "c+w"
+      ]
+    },
+    left: {
+      key: "a+w",
+      presets: [
+        "a+w",
+        "q+w",
+        "s"
+      ]
+    },
+    right: {
+      key: "e+w",
+      presets: [
+        "e+w",
+        "lshift+w",
+        "space"
+      ]
+    }
   },
   def: {
     name: "DEF / RUN",
     baseKey: "q",
-    right: { key: "e", presets: ["e", "e+q", "lshift"] },
-    left: { key: "s", presets: ["s", "s+q", "c"] },
-    up: { key: "d", presets: ["d", "w", "d+q"] },
-    down: { key: "z", presets: ["z", "c", "s"] }
+    right: {
+      key: "e",
+      presets: [
+        "e",
+        "e+q",
+        "lshift"
+      ]
+    },
+    left: {
+      key: "s",
+      presets: [
+        "s",
+        "s+q",
+        "c"
+      ]
+    },
+    up: {
+      key: "z",
+      presets: [
+        "d",
+        "w",
+        "d+q"
+      ]
+    },
+    down: {
+      key: "c",
+      presets: [
+        "z",
+        "c",
+        "s"
+      ]
+    }
   }
 };
+
+const DEFAULT_CUSTOM_BUTTONS = [
+  {
+    id: "custom-btn-1792862383956",
+    label: "Menu",
+    key: "b",
+    color: "purple",
+    left: "10%",
+    top: "15%",
+    scale: 1
+  },
+  {
+    id: "custom-btn-1792867893832",
+    label: "Hold",
+    key: "v",
+    color: "purple",
+    left: "24%",
+    top: "29%",
+    scale: 1
+  }
+];
+
+const DEFAULT_EFOOTBALL_LAYOUT = {
+  btnScale: 1.15,
+  btnOpacity: 0.95,
+  positions: {
+    "wrap-action-through": {
+      left: "21.3%",
+      top: "24.5%",
+      scale: 1.3
+    },
+    "wrap-action-def": {
+      left: "40%",
+      top: "63.3%",
+      scale: 1.5
+    },
+    "wrap-action-shoot": {
+      left: "66.2%",
+      top: "11.9%",
+      scale: 1.25
+    },
+    "wrap-action-pass": {
+      left: "-12.6%",
+      top: "61%",
+      scale: 1.45
+    },
+    "wrap-action-dash": {
+      left: "-74.3%",
+      top: "81.1%",
+      scale: 1.3
+    },
+    "wrap-action-switch": {
+      left: "-75.3%",
+      top: "45.8%",
+      scale: 1.4
+    },
+    "custom-btn-1792862383956": {
+      left: "-100.8%",
+      top: "-9.2%",
+      scale: 1
+    },
+    "custom-btn-1792867893832": {
+      left: "-47.7%",
+      top: "-8.4%",
+      scale: 1
+    }
+  }
+};
+
+const DEFAULT_EFOOTBALL_PROFILE = {
+  name: "eFootball",
+  gestures: JSON.parse(JSON.stringify(DEFAULT_GESTURES)),
+  customButtons: JSON.parse(JSON.stringify(DEFAULT_CUSTOM_BUTTONS)),
+  layout: JSON.parse(JSON.stringify(DEFAULT_EFOOTBALL_LAYOUT)),
+  swipeBufferMs: 140,
+  updatedAt: "2026-10-25T07:21:20.709Z"
+};
+
+const DEFAULT_PROFILE_REVISION = 'efootball_profile_v20261025';
 
 // Application State
 const state = {
@@ -75,15 +266,15 @@ const state = {
 
   // HUD Layout Customization
   isEditingLayout: false,
-  hudBtnScale: 1.0,
+  hudBtnScale: 1.15,
   hudBtnOpacity: 0.95,
   selectedBtnWrap: null,
-  customButtons: [],
+  customButtons: JSON.parse(JSON.stringify(DEFAULT_CUSTOM_BUTTONS)),
 
   // Swipe Gestures
   gestures: JSON.parse(JSON.stringify(DEFAULT_GESTURES)),
   activeGestureBtnTab: 'pass',
-  swipeBufferMs: 70, // Recognition buffer window (ms) to distinguish flick from tap
+  swipeBufferMs: 140, // Recognition buffer window (ms) to distinguish flick from tap
 
   // Game Profiles System
   profiles: {},
@@ -211,6 +402,7 @@ const elements = {
   selectProfileChoice: document.getElementById('select-profile-choice'),
   btnNewProfile: document.getElementById('btn-new-profile'),
   btnRenameProfile: document.getElementById('btn-rename-profile'),
+  btnResetDefaultProfile: document.getElementById('btn-reset-default-profile'),
   btnDeleteProfile: document.getElementById('btn-delete-profile'),
   btnExportProfile: document.getElementById('btn-export-profile'),
   btnImportProfileTrigger: document.getElementById('btn-import-profile-trigger'),
@@ -1041,6 +1233,9 @@ function init() {
     });
   }
 
+  // Ensure default profile and layout are migrated to the latest revision
+  checkAndMigrateDefaultProfile();
+
   // Setup Layout Customization & Draggable Buttons
   loadSavedCustomButtons();
   setupDraggableButtons();
@@ -1277,15 +1472,27 @@ function saveCurrentLayout() {
 
 function loadSavedLayout() {
   const raw = localStorage.getItem('efootball_hud_layout');
-  if (!raw) return;
+  let layoutData = null;
+  if (raw) {
+    try {
+      layoutData = JSON.parse(raw);
+    } catch (e) {
+      console.warn("Could not load saved HUD layout:", e);
+    }
+  }
+  if (!layoutData) {
+    layoutData = JSON.parse(JSON.stringify(DEFAULT_EFOOTBALL_LAYOUT));
+  }
 
   try {
-    const layoutData = JSON.parse(raw);
     if (layoutData.btnScale) {
       state.hudBtnScale = layoutData.btnScale;
       document.documentElement.style.setProperty('--hud-btn-scale', layoutData.btnScale);
       if (elements.sliderBtnSize && !state.selectedBtnWrap) {
         elements.sliderBtnSize.value = layoutData.btnScale;
+      }
+      if (elements.badgeSizeVal) {
+        elements.badgeSizeVal.textContent = `${Math.round(layoutData.btnScale * 100)}%`;
       }
     }
     if (layoutData.btnOpacity) {
@@ -1314,36 +1521,48 @@ function loadSavedLayout() {
       }
     }
   } catch (e) {
-    console.warn("Could not load saved HUD layout:", e);
+    console.warn("Could not apply HUD layout:", e);
   }
 }
 
 function resetLayout() {
   localStorage.removeItem('efootball_hud_layout');
-  state.hudBtnScale = 1.0;
-  state.hudBtnOpacity = 0.95;
-  document.documentElement.style.setProperty('--hud-btn-scale', '1.0');
-  document.documentElement.style.setProperty('--hud-btn-opacity', '0.95');
+  const targetLayout = DEFAULT_EFOOTBALL_LAYOUT;
+  state.hudBtnScale = targetLayout.btnScale || 1.15;
+  state.hudBtnOpacity = targetLayout.btnOpacity || 0.95;
+  document.documentElement.style.setProperty('--hud-btn-scale', state.hudBtnScale);
+  document.documentElement.style.setProperty('--hud-btn-opacity', state.hudBtnOpacity);
 
-  if (elements.sliderBtnSize) elements.sliderBtnSize.value = '1.0';
-  if (elements.badgeSizeVal) elements.badgeSizeVal.textContent = '100%';
-  if (elements.sliderBtnOpacity) elements.sliderBtnOpacity.value = '0.95';
+  if (elements.sliderBtnSize) elements.sliderBtnSize.value = state.hudBtnScale;
+  if (elements.badgeSizeVal) elements.badgeSizeVal.textContent = `${Math.round(state.hudBtnScale * 100)}%`;
+  if (elements.sliderBtnOpacity) elements.sliderBtnOpacity.value = state.hudBtnOpacity;
 
   document.querySelectorAll('.hud-btn-wrap').forEach(wrap => {
     wrap.style.removeProperty('--btn-custom-scale');
-    // Only reset positions of standard buttons; custom buttons remain where user places them
-    if (!wrap.classList.contains('custom-btn-wrap')) {
-      wrap.style.left = '';
-      wrap.style.top = '';
-      wrap.style.right = '';
-      wrap.style.bottom = '';
-      wrap.style.transform = '';
-    }
   });
 
+  if (targetLayout.positions) {
+    for (const [id, pos] of Object.entries(targetLayout.positions)) {
+      const el = document.getElementById(id);
+      if (el) {
+        if (pos.left && pos.top) {
+          el.style.left = pos.left;
+          el.style.top = pos.top;
+          el.style.right = 'auto';
+          el.style.bottom = 'auto';
+          el.style.transform = 'none';
+        }
+        if (pos.scale) {
+          el.style.setProperty('--btn-custom-scale', pos.scale);
+        }
+      }
+    }
+  }
+
   deselectButtonForEdit();
+  saveCurrentLayout();
   triggerHaptic(20);
-  addLogEntry("Reset buttons to standard positions and default scales", "info");
+  addLogEntry("Reset buttons to default eFootball layout", "info");
 }
 
 // ================= Custom Buttons Engine (Add / Delete / Bind) =================
@@ -1411,23 +1630,26 @@ function saveCustomButtons() {
 
 function loadSavedCustomButtons() {
   const raw = localStorage.getItem('efootball_custom_buttons');
-  if (!raw) return;
-  try {
-    const list = JSON.parse(raw);
-    if (Array.isArray(list)) {
-      state.customButtons = list;
-      const cluster = document.getElementById('action-cluster') || document.getElementById('action-zone');
-      list.forEach(btnData => {
-        if (!document.getElementById(btnData.id)) {
-          const el = createCustomButtonElement(btnData);
-          if (cluster) cluster.appendChild(el);
-        }
-      });
-      syncAllMappingsToServer();
+  let list = null;
+  if (raw) {
+    try {
+      list = JSON.parse(raw);
+    } catch (e) {
+      console.warn("Could not parse saved custom buttons:", e);
     }
-  } catch (e) {
-    console.warn("Could not parse saved custom buttons:", e);
   }
+  if (!Array.isArray(list)) {
+    list = JSON.parse(JSON.stringify(DEFAULT_CUSTOM_BUTTONS));
+  }
+  state.customButtons = list;
+  const cluster = document.getElementById('action-cluster') || document.getElementById('action-zone');
+  list.forEach(btnData => {
+    if (!document.getElementById(btnData.id)) {
+      const el = createCustomButtonElement(btnData);
+      if (cluster) cluster.appendChild(el);
+    }
+  });
+  syncAllMappingsToServer();
 }
 
 function initCustomButtonModal() {
@@ -1860,7 +2082,7 @@ function saveGesturesFromUI() {
 function saveGestures() {
   try {
     localStorage.setItem('efootball_swipe_gestures', JSON.stringify(state.gestures));
-    localStorage.setItem('efootball_swipe_buffer', state.swipeBufferMs || 70);
+    localStorage.setItem('efootball_swipe_buffer', state.swipeBufferMs || 140);
     syncAllMappingsToServer();
     addLogEntry("Button bindings & swipe combos synchronized!", "press");
   } catch (e) {
@@ -1887,7 +2109,7 @@ function loadSavedGestures() {
 
   const savedBuffer = localStorage.getItem('efootball_swipe_buffer');
   if (savedBuffer) {
-    state.swipeBufferMs = parseInt(savedBuffer, 10) || 70;
+    state.swipeBufferMs = parseInt(savedBuffer, 10) || 140;
   }
 }
 
@@ -1920,6 +2142,9 @@ function initProfilesSystem() {
   if (elements.btnRenameProfile) {
     elements.btnRenameProfile.addEventListener('click', renameCurrentProfile);
   }
+  if (elements.btnResetDefaultProfile) {
+    elements.btnResetDefaultProfile.addEventListener('click', resetCurrentProfileToDefault);
+  }
   if (elements.btnDeleteProfile) {
     elements.btnDeleteProfile.addEventListener('click', deleteCurrentProfile);
   }
@@ -1942,6 +2167,21 @@ function initProfilesSystem() {
         e.target.value = ''; // Reset file input so same file can be re-selected if desired
       }
     });
+  }
+}
+
+function resetCurrentProfileToDefault() {
+  if (state.currentProfile === 'eFootball') {
+    if (!confirm('Reset "eFootball" profile to the official default mappings and layout?')) return;
+    state.profiles['eFootball'] = JSON.parse(JSON.stringify(DEFAULT_EFOOTBALL_PROFILE));
+    applyProfileSnapshot(state.profiles['eFootball']);
+    saveActiveProfileState();
+    populateProfileDropdown();
+    renderProfileSummary();
+    triggerHaptic(30);
+    addLogEntry('Reset "eFootball" profile to factory default.', 'press');
+  } else {
+    alert('Reset to default is configured for the "eFootball" profile.');
   }
 }
 
@@ -1968,7 +2208,7 @@ function saveActiveProfileState() {
     gestures: JSON.parse(JSON.stringify(state.gestures)),
     customButtons: JSON.parse(JSON.stringify(state.customButtons || [])),
     layout: getActiveLayoutData(),
-    swipeBufferMs: state.swipeBufferMs || 70,
+    swipeBufferMs: state.swipeBufferMs || 140,
     updatedAt: new Date().toISOString()
   };
 
@@ -1980,7 +2220,34 @@ function saveActiveProfileState() {
   }
 }
 
+function checkAndMigrateDefaultProfile() {
+  if (localStorage.getItem('efootball_default_profile_rev') !== DEFAULT_PROFILE_REVISION) {
+    // Clear legacy independent caches so new defaults take effect smoothly
+    localStorage.removeItem('efootball_hud_layout');
+    localStorage.removeItem('efootball_custom_buttons');
+    localStorage.removeItem('efootball_swipe_gestures');
+    localStorage.removeItem('efootball_swipe_buffer');
+
+    let loaded = null;
+    const raw = localStorage.getItem('efootball_game_profiles');
+    if (raw) {
+      try {
+        loaded = JSON.parse(raw);
+      } catch (e) {}
+    }
+    if (loaded && typeof loaded === 'object') {
+      loaded['eFootball'] = JSON.parse(JSON.stringify(DEFAULT_EFOOTBALL_PROFILE));
+      try {
+        localStorage.setItem('efootball_game_profiles', JSON.stringify(loaded));
+      } catch (e) {}
+    }
+    localStorage.setItem('efootball_default_profile_rev', DEFAULT_PROFILE_REVISION);
+  }
+}
+
 function loadAllProfilesFromStorage() {
+  checkAndMigrateDefaultProfile();
+
   let loadedProfiles = null;
   const raw = localStorage.getItem('efootball_game_profiles');
   if (raw) {
@@ -1994,13 +2261,7 @@ function loadAllProfilesFromStorage() {
   // Create default profiles if storage is empty
   if (!loadedProfiles || typeof loadedProfiles !== 'object' || Object.keys(loadedProfiles).length === 0) {
     loadedProfiles = {
-      'eFootball': {
-        name: 'eFootball',
-        gestures: JSON.parse(JSON.stringify(DEFAULT_GESTURES)),
-        customButtons: JSON.parse(JSON.stringify(state.customButtons || [])),
-        layout: getActiveLayoutData(),
-        swipeBufferMs: 70
-      },
+      'eFootball': JSON.parse(JSON.stringify(DEFAULT_EFOOTBALL_PROFILE)),
       'FIFA / EA FC': {
         name: 'FIFA / EA FC',
         gestures: {
@@ -2010,8 +2271,8 @@ function loadAllProfilesFromStorage() {
           def: { name: "SPRINT / TACKLE", baseKey: "e", right: { key: "e", presets: ["e"] }, left: { key: "s", presets: ["s"] }, up: { key: "d", presets: ["d"] }, down: { key: "a", presets: ["a"] } }
         },
         customButtons: [],
-        layout: getActiveLayoutData(),
-        swipeBufferMs: 70
+        layout: JSON.parse(JSON.stringify(DEFAULT_EFOOTBALL_LAYOUT)),
+        swipeBufferMs: 140
       }
     };
   }
